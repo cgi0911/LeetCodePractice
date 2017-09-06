@@ -1,9 +1,13 @@
 class Solution(object):
-    def lengthOfLongestSubstringTwoDistinct(self, s):
+    def lengthOfLongestSubstringKDistinct(self, s, k):
         """
         :type s: str
+        :type k: int
         :rtype: int
         """
+        if (k == 0):
+            return 0
+        
         max_len = 0
         st = 0
         last_occur = {}
@@ -15,18 +19,19 @@ class Solution(object):
                 last_occur[c] = i   # New char is already in the map
                 
             else:
-                if (len(last_occur) < 2):
-                    last_occur[c] = i   # Less than 2 unique chars. Simply include the new char
+                if (len(last_occur) < k):
+                    last_occur[c] = i   # Less than k unique chars. Simply include the new char
                 else:
                     uniq = list(last_occur.keys ())
                     to_del = ''
+                    min_last_occur = len(s) + 1
                     # To determine which old unique char to be excluded
-                    if (last_occur[uniq[0]] < last_occur[uniq[1]]):
-                        to_del = uniq[0]
-                        st = last_occur[uniq[0]] + 1    # Update st to exclude the old char
-                    else:
-                        to_del = uniq[1]
-                        st = last_occur[uniq[1]] + 1
+                    for q in uniq:
+                        if (last_occur[q] < min_last_occur):
+                            to_del = q
+                            min_last_occur = last_occur[q]
+                    
+                    st = min_last_occur + 1
                     del last_occur[to_del]  # Remove the old char from map
                     last_occur[c] = i       # Include the new char in map
             
@@ -39,5 +44,5 @@ if __name__ == "__main__":
     sol = Solution()
     s = input("Input your string: ")
     
-    print (sol.lengthOfLongestSubstringTwoDistinct(s))
+    print (sol.lengthOfLongestSubstringKDistinct(s, 3))
     
